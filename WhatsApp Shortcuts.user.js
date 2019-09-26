@@ -14,6 +14,8 @@
     'use strict';
     const $ = window.jQuery;
 
+    let currentReply = null;
+
     const WhatsApp = {
         isLoading: function() {
             const input = this.getSearchInput();
@@ -29,17 +31,64 @@
 
         getMessageInput: function() {
             return $("div:contains('Type a message'):parent > .selectable-text")[0];
+        },
+
+        isMessageInputFocused() {
+            return $(this.getMessageInput()).is(":focus");
+        },
+
+        getActivedConversation() {
+            const conversation = $("#pane-side ._3mMX1");
+
+            if (conversation)
+                return $(conversation).parents('.X7YrQ');
+        },
+
+        getFirstConversation() {
+            return this.getConversations().first();
+        },
+
+        getConversations() {
+            return $("#pane-side .X7YrQ");
+        },
+
+        getPrevMessage() {
+            if (currentReply === null || $(currentReply).parents("body")[0] === undefined) {
+                return $(".FTBzM").last()[0];
+            }
+
+            return $(currentReply).prev()[0];
+        },
+
+        getNextMessage() {
+            if (currentReply === null || $(currentReply).parents("body")[0] === undefined) {
+                return $(".FTBzM").last()[0];
+            }
+
+            return $(currentReply).next()[0];
         }
     }
 
-    let selectedMessage;
-
-    function doubleClick(selector) {
-        const element = document.querySelector(selector);
+    function doubleClick(selector, _element = null) {
+        const element = _element || document.querySelector(selector);
 
         if (!element) return;
 
         const event = new MouseEvent('dblclick', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true
+        });
+
+        element.dispatchEvent(event);
+    }
+
+    function click(selector, _element = null) {
+        const element = _element || document.querySelector(selector);
+
+        if (!element) return;
+
+        const event = new MouseEvent('click', {
             'view': window,
             'bubbles': true,
             'cancelable': true
@@ -59,6 +108,40 @@
         });
     }
 
+    function bindChangeConversation() {
+        Mousetrap.bind('ctrl+down', function() {
+            const conversation = WhatsApp.getActivedConversation();
+
+            if (conversation === undefined) {
+                const firstConversation = WhatsApp.getFirstConversation().get(0);
+
+            }
+            console.log('up up!');
+        });
+
+        Mousetrap.bind('alt+up', function() {
+            const message = WhatsApp.getPrevMessage();
+            if (message) {
+                doubleClick("", message);
+                currentReply = message;
+            }
+        });
+
+        Mousetrap.bind('alt+down', function() {
+            const message = WhatsApp.getNextMessage();
+            if (message) {
+                doubleClick("", message);
+                currentReply = message;
+            }
+        });
+
+        $(document).on('keyup', '._3u328', function(e) {
+            if (e.keyCode === 27) {
+                currentReply = null;
+            }
+        });
+    }
+
     function start() {
         if (WhatsApp.isLoading()) {
             setTimeout(start, 200);
@@ -66,6 +149,7 @@
         }
 
         bindSearch();
+        bindChangeConversation();
 
         $(document).on('keydown', "div:contains('Type a message'):parent > .selectable-text", function() {
             const input = WhatsApp.getMessageInput();
