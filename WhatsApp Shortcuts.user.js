@@ -109,7 +109,7 @@
     }
 
     function bindChangeConversation() {
-        Mousetrap.bind('alt+up', function() {
+        Mousetrap.bind(['alt+up', 'alt+k'], function() {
             const message = WhatsApp.getPrevMessage();
             if (message) {
                 doubleClick("", message);
@@ -117,7 +117,7 @@
             }
         });
 
-        Mousetrap.bind('alt+down', function() {
+        Mousetrap.bind(['alt+down', 'alt+j'], function() {
             const message = WhatsApp.getNextMessage();
             if (message) {
                 doubleClick("", message);
@@ -125,16 +125,8 @@
             }
         });
 
-        Mousetrap.bind('alt+k', function() {
-            Mousetrap.trigger('alt+up');
-        });
-
-        Mousetrap.bind('alt+j', function() {
-            Mousetrap.trigger('alt+down');
-        });
-
         $(document).on('keyup', '._3u328', function(e) {
-            if (e.keyCode === 27) {
+            if (e.keyCode === 27 || e.keyCode === 13) {
                 currentReply = null;
             }
         });
