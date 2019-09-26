@@ -109,16 +109,6 @@
     }
 
     function bindChangeConversation() {
-        Mousetrap.bind('ctrl+down', function() {
-            const conversation = WhatsApp.getActivedConversation();
-
-            if (conversation === undefined) {
-                const firstConversation = WhatsApp.getFirstConversation().get(0);
-
-            }
-            console.log('up up!');
-        });
-
         Mousetrap.bind('alt+up', function() {
             const message = WhatsApp.getPrevMessage();
             if (message) {
@@ -133,6 +123,14 @@
                 doubleClick("", message);
                 currentReply = message;
             }
+        });
+
+        Mousetrap.bind('alt+k', function() {
+            Mousetrap.trigger('alt+up');
+        });
+
+        Mousetrap.bind('alt+j', function() {
+            Mousetrap.trigger('alt+down');
         });
 
         $(document).on('keyup', '._3u328', function(e) {
