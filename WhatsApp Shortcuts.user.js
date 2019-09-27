@@ -103,13 +103,13 @@
             input = WhatsApp.getSearchInput();
         }
 
-        Mousetrap.bind('ctrl+/', function() {
+        Mousetrap.bind(['ctrl+/', 'command+/'], function() {
             WhatsApp.focusSearch();
         });
     }
 
     function bindChangeConversation() {
-        Mousetrap.bind(['alt+up', 'alt+k'], function() {
+        Mousetrap.bind(['alt+up', 'alt+k', 'command+k'], function() {
             const message = WhatsApp.getPrevMessage();
             if (message) {
                 doubleClick("", message);
@@ -117,7 +117,7 @@
             }
         });
 
-        Mousetrap.bind(['alt+down', 'alt+j'], function() {
+        Mousetrap.bind(['alt+down', 'alt+j', 'command+j'], function() {
             const message = WhatsApp.getNextMessage();
             if (message) {
                 doubleClick("", message);
