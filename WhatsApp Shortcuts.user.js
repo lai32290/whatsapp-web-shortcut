@@ -109,7 +109,7 @@
     }
 
     function bindChangeConversation() {
-        Mousetrap.bind(['alt+up', 'alt+k', 'command+k'], function() {
+        Mousetrap.bind(['alt+up', 'alt+k', 'command+k', 'command+up'], function() {
             const message = WhatsApp.getPrevMessage();
             if (message) {
                 doubleClick("", message);
@@ -117,7 +117,7 @@
             }
         });
 
-        Mousetrap.bind(['alt+down', 'alt+j', 'command+j'], function() {
+        Mousetrap.bind(['alt+down', 'alt+j', 'command+j', 'command+down'], function() {
             const message = WhatsApp.getNextMessage();
             if (message) {
                 doubleClick("", message);
