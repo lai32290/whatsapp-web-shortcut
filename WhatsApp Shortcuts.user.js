@@ -26,11 +26,11 @@
         },
 
         getSearchInput: function() {
-            return document.querySelector('input[title="Search or start new chat"]');
+            return document.querySelector('input._2zCfw');
         },
 
         getMessageInput: function() {
-            return $("div:contains('Type a message'):parent > .selectable-text")[0];
+            return $("._3FeAD > .selectable-text")[0];
         },
 
         isMessageInputFocused() {
