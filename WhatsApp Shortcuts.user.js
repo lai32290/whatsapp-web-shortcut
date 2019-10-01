@@ -6,21 +6,25 @@
 // @author       lai32290
 // @match        https://web.whatsapp.com/
 // @require      https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.3/mousetrap.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
-    const $ = window.jQuery;
 
     let currentReply = null;
 
     const WhatsApp = {
+        findParent: function(el, sel) {
+            while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel)));
+            return el;
+        },
+
         isLoading: function() {
             const input = this.getSearchInput();
             return input === null;
         },
+
         focusSearch: function() {
             this.getSearchInput().focus();
         },
@@ -30,42 +34,45 @@
         },
 
         getMessageInput: function() {
-            return $("._3FeAD > .selectable-text")[0];
+            return document.querySelector("._3FeAD > .selectable-text");
         },
 
         isMessageInputFocused() {
-            return $(this.getMessageInput()).is(":focus");
+            return document.querySelectorAll(this.getMessageInput()).is(":focus");
         },
 
         getActivedConversation() {
-            const conversation = $("#pane-side ._3mMX1");
+            const conversation = document.querySelector("#pane-side ._3mMX1");
 
-            if (conversation)
-                return $(conversation).parents('.X7YrQ');
+            if (conversation) {
+                return this.findParent(conversation, '.X7YrQ');
+            }
         },
 
         getFirstConversation() {
-            return this.getConversations().first();
+            return this.getConversations()[0];
         },
 
         getConversations() {
-            return $("#pane-side .X7YrQ");
+            return document.querySelectorAll("#pane-side .X7YrQ");
         },
 
         getPrevMessage() {
-            if (currentReply === null || $(currentReply).parents("body")[0] === undefined) {
-                return $(".FTBzM").last()[0];
+            if (currentReply === null || this.findParent.call(this, currentReply, "body") === null) {
+                const messages = document.querySelectorAll(".FTBzM");
+                return messages[messages.length - 1];
             }
 
-            return $(currentReply).prev()[0];
+            return currentReply.previousSibling;
         },
 
         getNextMessage() {
-            if (currentReply === null || $(currentReply).parents("body")[0] === undefined) {
-                return $(".FTBzM").last()[0];
+            if (currentReply === null || this.findParent.call(this, currentReply, "body") === null) {
+                const messages = document.querySelectorAll(".FTBzM");
+                return messages[messages.length - 1];
             }
 
-            return $(currentReply).next()[0];
+            return currentReply.nextSibling;
         }
     }
 
@@ -125,9 +132,11 @@
             }
         });
 
-        $(document).on('keyup', '._3u328', function(e) {
-            if (e.keyCode === 27 || e.keyCode === 13) {
-                currentReply = null;
+        document.addEventListener("keyup", function(e) {
+            if (e.target.classList.contains("_3u328")) {
+                if (e.keyCode === 27 || e.keyCode === 13) {
+                    currentReply = null;
+                }
             }
         });
     }
@@ -141,9 +150,11 @@
         bindSearch();
         bindChangeConversation();
 
-        $(document).on('keydown', "div:contains('Type a message'):parent > .selectable-text", function() {
-            const input = WhatsApp.getMessageInput();
-            $(input).addClass("mousetrap");
+        document.addEventListener("keydown", function(e) {
+            if (e.target.classList.contains("selectable-text")) {
+                const input = WhatsApp.getMessageInput();
+                input.classList.add("mousetrap");
+            }
         });
     }
 
