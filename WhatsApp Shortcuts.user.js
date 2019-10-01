@@ -37,26 +37,6 @@
             return document.querySelector("._3FeAD > .selectable-text");
         },
 
-        isMessageInputFocused() {
-            return document.querySelectorAll(this.getMessageInput()).is(":focus");
-        },
-
-        getActivedConversation() {
-            const conversation = document.querySelector("#pane-side ._3mMX1");
-
-            if (conversation) {
-                return this.findParent(conversation, '.X7YrQ');
-            }
-        },
-
-        getFirstConversation() {
-            return this.getConversations()[0];
-        },
-
-        getConversations() {
-            return document.querySelectorAll("#pane-side .X7YrQ");
-        },
-
         getPrevMessage() {
             if (currentReply === null || this.findParent.call(this, currentReply, "body") === null) {
                 const messages = document.querySelectorAll(".FTBzM");
