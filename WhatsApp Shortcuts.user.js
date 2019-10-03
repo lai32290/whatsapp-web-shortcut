@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Shortcuts
 // @namespace    WA-Shortcuts
-// @version      0.1
+// @version      0.2
 // @description  Adding shortcuts to WhatsApp web application.
 // @author       lai32290
 // @match        https://web.whatsapp.com/
