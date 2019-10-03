@@ -76,8 +76,15 @@
         });
     }
 
-    function bindChangeOfConversation(){
+    function reactEventHandlers(element){
+        const reactHandlerKey=Object.keys(element).filter(function(item){
+            return item.indexOf('__reactEventHandlers')>=0
+         });
+        const reactHandler=element[reactHandlerKey[0]];
+        return reactHandler;
+    }
 
+    function bindChangeOfConversation(){
         const event = new MouseEvent('onMouseDown', {
             'view': window,
             'bubbles': true,
@@ -86,51 +93,38 @@
 
         Mousetrap.bind(['down'], function() {
         try{
-
-
             const currentIndex = WhatsApp.conversation.currentConversationIndex;
             const totalIndex = WhatsApp.conversation.totalConversationElements;
 
             const nextIndex = (totalIndex + currentIndex - 1) %totalIndex;                
-
             const nextElement = WhatsApp.getConversation()[nextIndex];
+
             if(!nextElement) return;                
 
-            const reactHandlerKey=Object.keys(nextElement).filter(function(item){
-                return item.indexOf('__reactEventHandlers')>=0
-             });
-            const reactHandler=nextElement[reactHandlerKey[0]];
-             
+            const reactHandler=reactEventHandlers(nextElement);
             reactHandler.onMouseDown(event);
-            WhatsApp.conversation.currentConversationIndex = nextIndex;
 
+            WhatsApp.conversation.currentConversationIndex = nextIndex;
             }
         catch(err){
-            console.log(err);
-                
+            console.log(err); 
             }
         });
 
         Mousetrap.bind(['up'], function() {
             try{
-
                 const currentIndex = WhatsApp.conversation.currentConversationIndex;
                 const totalIndex = WhatsApp.conversation.totalConversationElements;
 
                 const nextIndex = (totalIndex + currentIndex + 1) %totalIndex;
-
                 const nextElement = WhatsApp.getConversation()[nextIndex];
 
                 if(!nextElement) return;                
 
-                const reactHandlerKey=Object.keys(nextElement).filter(function(item){
-                    return item.indexOf('__reactEventHandlers')>=0
-                 });
-                const reactHandler=nextElement[reactHandlerKey[0]];
-                 
+                const reactHandler=reactEventHandlers(nextElement);
                 reactHandler.onMouseDown(event);
+                
                 WhatsApp.conversation.currentConversationIndex = nextIndex;
-
             }
             catch(err){
                 console.log(err);  
