@@ -123,7 +123,7 @@
 
                 const reactHandler=reactEventHandlers(nextElement);
                 reactHandler.onMouseDown(event);
-                
+
                 WhatsApp.conversation.currentConversationIndex = nextIndex;
             }
             catch(err){
@@ -131,7 +131,6 @@
             }
         });
     }
-
 
     function doubleClick(selector, _element = null) {
         const element = _element || document.querySelector(selector);
@@ -209,7 +208,6 @@
         addEventListenerToConversation();
         bindChangeOfConversation();
             
-
         document.addEventListener("keydown", function(e) {
             if (e.target.classList.contains("selectable-text")) {
                 const input = WhatsApp.getMessageInput();
