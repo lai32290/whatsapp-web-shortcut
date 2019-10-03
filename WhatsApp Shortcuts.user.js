@@ -60,27 +60,44 @@
             return currentReply.nextSibling;
         },
 
-        getConversation(){
-            return document.querySelectorAll('#pane-side .X7YrQ div._2UaNq');
-         }
-    }
+        getConversation(container) {
+            return container.querySelector('div._2UaNq');
+        },
 
-    function addEventListenerToConversation(){
-        const conversationsElements = WhatsApp.getConversation();
-        WhatsApp.conversation.totalConversationElements= conversationsElements.length;
+        getConversations() {
+            return this.getSidePanel().querySelectorAll('.X7YrQ');
+        },
 
-        conversationsElements.forEach((conversationElement, index) => {
-            conversationElement.addEventListener('click',() => {
-                WhatsApp.conversation.currentConversationIndex = index;                    
+        getSortedConversations() {
+            function getConversationTop(el) {
+                return parseInt(el.style.transform.replace(/\D/g, ''));
+            }
+
+            const conversations = Array.apply(this, this.getConversations());
+
+            return conversations.sort((elA, elB) => {
+                const elATop = getConversationTop(elA);
+                const elBTop = getConversationTop(elB);
+
+                return elATop - elBTop;
             });
-        });
+        },
+
+        getCurrentConversation() {
+            const conversations = Array.apply(this, this.getConversations());
+            return conversations.find(el => el.querySelector('div._2UaNq._3mMX1'));
+        },
+
+        getSidePanel() {
+            return document.querySelector('#pane-side');
+        }
     }
 
     function reactEventHandlers(element){
-        const reactHandlerKey=Object.keys(element).filter(function(item){
+        const reactHandlerKey = Object.keys(element).filter(function(item){
             return item.indexOf('__reactEventHandlers')>=0
          });
-        const reactHandler=element[reactHandlerKey[0]];
+        const reactHandler = element[reactHandlerKey[0]];
         return reactHandler;
     }
 
@@ -91,43 +108,44 @@
             'cancelable': true
         });
 
-        Mousetrap.bind(['down'], function() {
-        try{
-            const currentIndex = WhatsApp.conversation.currentConversationIndex;
-            const totalIndex = WhatsApp.conversation.totalConversationElements;
+        Mousetrap.bind(['alt+[', 'command+['], function() {
+            try {
+                const activedConversation = WhatsApp.getCurrentConversation();
+                const sortedConversations = WhatsApp.getSortedConversations();
+                const nextIndex = sortedConversations.indexOf(activedConversation);
+                let nextConversationContainer = sortedConversations[ nextIndex + 1 ];
 
-            const nextIndex = (totalIndex + currentIndex - 1) %totalIndex;                
-            const nextElement = WhatsApp.getConversation()[nextIndex];
+                if(!nextConversationContainer) {
+                    nextConversationContainer = WhatsApp.getSortedConversations()[0];
+                };
 
-            if(!nextElement) return;                
-
-            const reactHandler=reactEventHandlers(nextElement);
-            reactHandler.onMouseDown(event);
-
-            WhatsApp.conversation.currentConversationIndex = nextIndex;
+                const nextConversation = WhatsApp.getConversation(nextConversationContainer);
+                const reactHandler = reactEventHandlers(nextConversation);
+                reactHandler.onMouseDown(event);
             }
-        catch(err){
-            console.log(err); 
+            catch(err){
+                console.log(err);
             }
         });
 
-        Mousetrap.bind(['up'], function() {
+        Mousetrap.bind(['alt+]', 'command+]'], function() {
             try{
-                const currentIndex = WhatsApp.conversation.currentConversationIndex;
-                const totalIndex = WhatsApp.conversation.totalConversationElements;
+                const activedConversation = WhatsApp.getCurrentConversation();
+                const sortedConversations = WhatsApp.getSortedConversations();
+                const nextIndex = sortedConversations.indexOf(activedConversation);
+                let nextConversationContainer = sortedConversations[ nextIndex - 1 ];
 
-                const nextIndex = (totalIndex + currentIndex + 1) %totalIndex;
-                const nextElement = WhatsApp.getConversation()[nextIndex];
+                if(!nextConversationContainer) {
+                    const sortedConversations = WhatsApp.getSortedConversations();
+                    nextConversationContainer = sortedConversations[ sortedConversations.length - 1];
+                };
 
-                if(!nextElement) return;                
-
-                const reactHandler=reactEventHandlers(nextElement);
+                const nextConversation = WhatsApp.getConversation(nextConversationContainer);
+                const reactHandler = reactEventHandlers(nextConversation);
                 reactHandler.onMouseDown(event);
-
-                WhatsApp.conversation.currentConversationIndex = nextIndex;
             }
             catch(err){
-                console.log(err);  
+                console.log(err);
             }
         });
     }
@@ -205,9 +223,8 @@
 
         bindSearch();
         bindChangeConversation();
-        addEventListenerToConversation();
         bindChangeOfConversation();
-            
+
         document.addEventListener("keydown", function(e) {
             if (e.target.classList.contains("selectable-text")) {
                 const input = WhatsApp.getMessageInput();
