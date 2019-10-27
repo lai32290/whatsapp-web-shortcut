@@ -16,3 +16,4 @@ WhatsApp Web Shortcut is a Usercript to add shortcut to WhatsApp Web
 | `Ctrl+/`, `Command+/` | Focus search field |
 | `Alt+Up`, `Alt+k`, `Command+Up`, `Command+k` | Select previous message to replay |
 | `Alt+Down`, `Alt+j`, `Command+Down`, `Command+j` | Select next message to replay |
+| `Alt+;`, `Command+;` | Open Search Messages in conversation |
