@@ -90,7 +90,11 @@
 
         getSidePanel() {
             return document.querySelector('#pane-side');
-        }
+        },
+
+        getSearchButton() {
+          return document.querySelector('#main ._3j8Pd:first-child > div[role=button]');
+        },
     }
 
     function reactEventHandlers(element){
@@ -215,6 +219,23 @@
         });
     }
 
+    function bindSearchInConversation() {
+
+        const event = new MouseEvent('onMouseDown', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true
+        });
+
+        Mousetrap.bind(['alt+;', 'command+;'], function() {
+            const searchButton = WhatsApp.getSearchButton();
+            if (searchButton) {
+                const reactHandler = reactEventHandlers(searchButton);
+                reactHandler.onMouseDown(event);
+            }
+        });
+    }
+
     function start() {
         if (WhatsApp.isLoading()) {
             setTimeout(start, 200);
@@ -224,6 +245,7 @@
         bindSearch();
         bindChangeConversation();
         bindChangeOfConversation();
+        bindSearchInConversation();
 
         document.addEventListener("keydown", function(e) {
             if (e.target.classList.contains("selectable-text")) {
