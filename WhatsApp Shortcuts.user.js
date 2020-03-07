@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Shortcuts
 // @namespace    WA-Shortcuts
-// @version      0.2
+// @version      0.3
 // @description  Adding shortcuts to WhatsApp web application.
 // @author       lai32290
 // @match        https://web.whatsapp.com/
@@ -35,11 +35,11 @@
         },
 
         getSearchInput: function() {
-            return document.querySelector('input._2zCfw');
+            return document.querySelector('div._3u328');
         },
 
         getMessageInput: function() {
-            return document.querySelector("._3FeAD > .selectable-text");
+            return document.querySelector("#main ._3FeAD > .selectable-text");
         },
 
         getPrevMessage() {
@@ -92,15 +92,15 @@
             return document.querySelector('#pane-side');
         },
 
-        getSearchButton() {
-          return document.querySelector('#main ._3j8Pd:first-child > div[role=button]');
-        },
+        getConversationByIndex(index) {
+            return this.getSortedConversations()[index];
+        }
     }
 
     function reactEventHandlers(element){
         const reactHandlerKey = Object.keys(element).filter(function(item){
             return item.indexOf('__reactEventHandlers')>=0
-         });
+        });
         const reactHandler = element[reactHandlerKey[0]];
         return reactHandler;
     }
@@ -184,6 +184,7 @@
 
     function bindSearch() {
         let input;
+
         while (input == null) {
             input = WhatsApp.getSearchInput();
         }
@@ -219,23 +220,6 @@
         });
     }
 
-    function bindSearchInConversation() {
-
-        const event = new MouseEvent('onMouseDown', {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true
-        });
-
-        Mousetrap.bind(['alt+;', 'command+;'], function() {
-            const searchButton = WhatsApp.getSearchButton();
-            if (searchButton) {
-                const reactHandler = reactEventHandlers(searchButton);
-                reactHandler.onMouseDown(event);
-            }
-        });
-    }
-
     function start() {
         if (WhatsApp.isLoading()) {
             setTimeout(start, 200);
@@ -245,7 +229,6 @@
         bindSearch();
         bindChangeConversation();
         bindChangeOfConversation();
-        bindSearchInConversation();
 
         document.addEventListener("keydown", function(e) {
             if (e.target.classList.contains("selectable-text")) {
