@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Shortcuts
 // @namespace    WA-Shortcuts
-// @version      0.3
+// @version      0.4
 // @description  Adding shortcuts to WhatsApp web application.
 // @author       lai32290
 // @match        https://web.whatsapp.com/
@@ -35,16 +35,16 @@
         },
 
         getSearchInput: function() {
-            return document.querySelector('div._3u328');
+            return document.querySelector('div._2S1VP');
         },
 
         getMessageInput: function() {
-            return document.querySelector("#main ._3FeAD > .selectable-text");
+            return document.querySelector("#main ._3F6QL > .selectable-text");
         },
 
         getPrevMessage() {
             if (currentReply === null || this.findParent.call(this, currentReply, "body") === null) {
-                const messages = document.querySelectorAll(".FTBzM");
+                const messages = document.querySelectorAll(".vW7d1");
                 return messages[messages.length - 1];
             }
 
@@ -53,7 +53,7 @@
 
         getNextMessage() {
             if (currentReply === null || this.findParent.call(this, currentReply, "body") === null) {
-                const messages = document.querySelectorAll(".FTBzM");
+                const messages = document.querySelectorAll(".vW7d1");
                 return messages[messages.length - 1];
             }
 
@@ -61,11 +61,11 @@
         },
 
         getConversation(container) {
-            return container.querySelector('div._2UaNq');
+            return container.querySelector('div._2EXPL');
         },
 
         getConversations() {
-            return this.getSidePanel().querySelectorAll('.X7YrQ');
+            return this.getSidePanel().querySelectorAll('._2wP_Y');
         },
 
         getSortedConversations() {
@@ -85,7 +85,7 @@
 
         getCurrentConversation() {
             const conversations = Array.apply(this, this.getConversations());
-            return conversations.find(el => el.querySelector('div._2UaNq._3mMX1'));
+            return conversations.find(el => el.querySelector('div._2EXPL._1f1zm'));
         },
 
         getSidePanel() {
@@ -100,7 +100,7 @@
     function reactEventHandlers(element){
         const reactHandlerKey = Object.keys(element).filter(function(item){
             return item.indexOf('__reactEventHandlers')>=0
-        });
+         });
         const reactHandler = element[reactHandlerKey[0]];
         return reactHandler;
     }
