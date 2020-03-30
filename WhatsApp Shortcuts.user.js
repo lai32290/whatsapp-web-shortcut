@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Shortcuts
 // @namespace    WA-Shortcuts
-// @version      0.4
+// @version      0.4.1
 // @description  Adding shortcuts to WhatsApp web application.
 // @author       lai32290
 // @match        https://web.whatsapp.com/
@@ -212,7 +212,7 @@
         });
 
         document.addEventListener("keyup", function(e) {
-            if (e.target.classList.contains("_3u328")) {
+            if (e.target.classList.contains("_2S1VP")) {
                 if (e.keyCode === 27 || e.keyCode === 13) {
                     currentReply = null;
                 }
